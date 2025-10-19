@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Makima AI</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    body {
+      background: radial-gradient(circle at top, #0a0a0a, #000);
+      color: #00ffcc;
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #chat {
+      width: 90%;
+      max-width: 500px;
+      height: 450px;
+      overflow-y: auto;
+      border: 2px solid #00ffcc;
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      box-shadow: 0 0 20px #00ffcc;
+    }
+    .msg { margin: 8px 0; line-height: 1.4em; }
+    .user { color: #00ffcc; }
+    .bot { color: #ff0077; }
+    input {
+      width: 70%;
+      padding: 10px;
+      border: 2px solid #00ffcc;
+      background: black;
+      color: #00ffcc;
+      border-radius: 5px;
+      outline: none;
+      font-family: inherit;
+    }
+    button {
+      padding: 10px 15px;
+      background: #00ffcc;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    h2 { text-shadow: 0 0 15px #00ffcc; margin-bottom: 10px; letter-spacing: 1px; }
+    footer { margin-top: 10px; font-size: 14px; color: #888; }
+  </style>
+</head>
+<body>
+  <h2>💬 Makima AI</h2>
+  <div id="chat"></div>
+  <div>
+    <input id="userInput" placeholder="Say something..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+  <footer>Developed by Sasuke Uchia</footer>
+
+  <script>
+    const chatBox = document.getElementById("chat");
+    const memory = [
+      { role: "system", content: "You are Makima, a calm, confident, teasing AI who speaks elegantly and never sounds robotic." }
+    ];
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      chatBox.innerHTML += `<div class='msg user'><b>You:</b> ${userText}</div>`;
+      input.value = "";
+      memory.push({ role: "user", content: userText });
+
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: memory })
+      });
+
+      const data = await response.json();
+      const botReply = data.reply;
+      chatBox.innerHTML += `<div class='msg bot'><b>Makima:</b> ${botReply}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      memory.push({ role: "assistant", content: botReply });
+    }
+  </script>
+</body>
+</html>

@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 export default async function handler(req, res) {
   try {
     const { messages } = await req.json();
-    const apiKey = process.env.GEMINI_API_KEY; // stored securely in Vercel
+    const apiKey = process.env.AIzaSyCNZz9OJbs-vmsOcKT5rnrjh9JGfPZ7WoI; // stored securely in Vercel
 
     const lastMessage = messages[messages.length - 1]?.content || "";
 
